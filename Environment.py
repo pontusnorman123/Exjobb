@@ -8,10 +8,10 @@ from enum import Enum
 from pandas import *
 
 class Actions(Enum):
-    UPP = 1
-    RIGHT = 2
-    DOWN = 3
-    LEFT = 4
+    UPP = 0
+    RIGHT = 1
+    DOWN = 2
+    LEFT = 3
 
 
 
@@ -32,10 +32,14 @@ class Warehouse(Env):
         self.col_pos = 1
         self.row_pos = 1
 
-        self.order = []
         #Olika typer av varor där en karaktär representerar en vara
-        self.wares = "abcdefgh"
+        self.wares = "ABCDEFGHIJKL"
 
+        #Varorna läggs i denna array
+        self.order = []
+
+        #Antal steg som agenten tagit
+        self.steps = 0
 
     def set_order(self, order_size):
 
@@ -44,6 +48,8 @@ class Warehouse(Env):
             self.order.append(ware)
 
     def step(self, action):
+
+        self.steps += 1
 
         if action == Actions.UPP.value:
             if self.row_pos == 1:
@@ -64,7 +70,7 @@ class Warehouse(Env):
                 self.row_pos += 1
 
         if action == Actions.LEFT.value:
-            if self.col_pos == 0:
+            if self.col_pos == 1:
                 pass
             else:
                 self.col_pos -= 1
@@ -74,11 +80,13 @@ class Warehouse(Env):
 
         current_pos = self.layout[self.row_pos][self.col_pos]
         if current_pos in self.order:
-            reward = 1
+            reward = self.get_reward()
 
-            current_row = self.layout[self.row_pos]
-            new_row = current_row[:self.col_pos] + '*' + current_row[self.col_pos + 1:]
-            self.layout[self.row_pos] = new_row
+            #current_row = self.layout[self.row_pos]
+            #new_row = current_row[:self.col_pos] + '*' + current_row[self.col_pos + 1:]
+            #self.layout[self.row_pos] = new_row
+
+            self.order.remove(current_pos)
 
         else:
             reward = 0
@@ -94,10 +102,12 @@ class Warehouse(Env):
 
         return self.row_pos, self.col_pos, reward, finished_status, info
 
-    def reset(self):
+    def reset(self, order_size):
 
         self.row_pos = 1
         self.col_pos = 1
+        self.set_order(order_size)
+        self.steps = 0
 
         return self.row_pos, self.col_pos
 
@@ -121,3 +131,6 @@ class Warehouse(Env):
             print(self.layout[i])
 
 
+    def get_reward(self):
+
+        return 1/self.steps
