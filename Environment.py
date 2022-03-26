@@ -22,7 +22,7 @@ class Warehouse(Env):
 
         self.layout = layout
         self.rows = len(self.layout) - 2
-        self.columns = len(self.layout) - 2
+        self.columns = len(self.layout[0]) - 2
 
         # Antal actions som kan tas
         self.action_space = Discrete(4)
@@ -75,6 +75,11 @@ class Warehouse(Env):
         current_pos = self.layout[self.row_pos][self.col_pos]
         if current_pos in self.order:
             reward = 1
+
+            current_row = self.layout[self.row_pos]
+            new_row = current_row[:self.col_pos] + '*' + current_row[self.col_pos + 1:]
+            self.layout[self.row_pos] = new_row
+
         else:
             reward = 0
 
