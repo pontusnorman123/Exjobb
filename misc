@@ -1,0 +1,111 @@
+class Actions(Enum):
+    UPP = 0
+    RIGHT = 1
+    DOWN = 2
+    LEFT = 3
+
+    def step(self, action):
+
+        self.steps += 1
+        x,y = self.get_agent_row_and_column()
+
+        if action == Actions.UPP.value:
+            if x == 0:   #self.row_pos == 1:
+                pass
+            else:
+                #self.row_pos -= 1
+                self.agent_pos += -self.columns
+        if action == Actions.RIGHT.value:
+            if y == self.columns:        #self.col_pos == self.columns:
+                pass
+            else:
+                self.agent_pos += 1
+                #self.col_pos += 1
+
+        if action == Actions.DOWN.value:
+            if x == self.rows:         #self.row_pos == self.rows:
+                pass
+            else:
+                self.agent_pos += self.columns
+                #self.row_pos += 1
+
+        if action == Actions.LEFT.value:
+            if y == 0:         #self.col_pos == 1:
+                pass
+            else:
+                self.agent_pos -= 1
+                #self.col_pos -= 1
+
+
+
+
+
+
+
+
+    def step(self, action):
+
+        self.steps += 1
+
+        if action == Actions.UPP.value:
+            if self.row_pos == 1:
+                pass
+            else:
+                self.row_pos -= 1
+        if action == Actions.RIGHT.value:
+            if self.col_pos == self.columns:
+                pass
+            else:
+                self.col_pos += 1
+
+        if action == Actions.DOWN.value:
+            if self.row_pos == self.rows:
+                pass
+            else:
+                self.row_pos += 1
+
+        if action == Actions.LEFT.value:
+            if self.col_pos == 1:
+                pass
+            else:
+                self.col_pos -= 1
+
+
+
+                ######### REWARD ###########
+
+                current_pos = self.layout[self.row_pos][self.col_pos]
+                if current_pos in self.order:
+                    reward = self.get_reward()
+
+                    self.order.remove(current_pos)
+
+                else:
+                    reward = 0
+
+
+
+
+        if action == Actions.UPP.value:
+            if action_res < 0:
+                pass
+            else:
+                self.agent_pos = self.agent_pos - self.columns
+
+        if action == Actions.RIGHT.value:
+            if action_res > self.columns:
+                pass
+            else:
+                self.agent_pos += 1
+
+        if action == Actions.DOWN.value:
+            if action_res > self.rows:
+                pass
+            else:
+                self.agent_pos = self.agent_pos + self.columns
+
+        if action == Actions.LEFT.value:
+            if action_res < 0:
+                pass
+            else:
+                self.agent_pos -= 1
