@@ -46,7 +46,7 @@ class Warehouse(Env):
         self.wares = "ABCDEFGHIJKL"
 
         #Varorna läggs i denna array
-        self.order = []
+        #self.order = ['A','B','C','D','E','F','G','H']
         self.order_size = order_size
 
         #Antal steg som agenten tagit
@@ -118,7 +118,7 @@ class Warehouse(Env):
         #self.row_pos = 1
         #self.col_pos = 1
         self.agent_pos = 0
-        self.set_order(self.order_size)
+        self.set_order()
         self.steps = 0
 
         return self.agent_pos

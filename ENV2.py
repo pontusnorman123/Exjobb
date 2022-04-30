@@ -31,9 +31,10 @@ class Warehouse(Env):
         self.action_space = Discrete(4)
         self.obs = [i for i in range(self.rows*self.columns)]
 
-        self.observation_space = Box(low=0,high=self.rows*self.columns, shape=(1,))
-        #self.observation_space = np.array((self.rows,self.columns))
-        #self.observation_space = self.columns, self.rows
+        self.observation_space = Box(low=np.array([0]),high=np.array([self.rows*self.columns]), shape=(1,))
+        #self.observation_space = Discrete(self.rows*self.columns , shape)
+
+
 
 
         #start state
@@ -45,11 +46,13 @@ class Warehouse(Env):
         self.wares = "ABCDEFGHIJKL"
 
         #Varorna läggs i denna array
-        self.order = []
+        self.order = ['A','B','C','D','E','F','G','H']
+        #self.order = ['A']
         self.order_size = order_size
 
         #Antal steg som agenten tagit
         self.steps = 0
+        self.work_time = 60
 
     def set_order(self, order_size):
 
@@ -64,7 +67,10 @@ class Warehouse(Env):
 
     def step(self, action):
 
+
+
         self.steps += 1
+        self.work_time -= 1
 
         if action == Actions.UPP.value:
             if self.row_pos == 0:
@@ -93,19 +99,24 @@ class Warehouse(Env):
                 self.col_pos -= 1
                 self.agent_pos -=1
 
+        current_pos = self.layout[self.row_pos][self.col_pos]
+
         ######### REWARD ###########
 
-        current_pos = self.layout[self.row_pos][self.col_pos]
         if current_pos in self.order:
-            reward = self.get_reward()
+            #if self.work_time >= 100:
+            #    reward = 5
+            #else:
+            #    reward = 1
 
-
+            reward = 1
             self.order.remove(current_pos)
 
         else:
             reward = 0
 
         ######## CHECK IF DONE ########
+
 
         if not self.order:
             finished_status = True
@@ -114,7 +125,6 @@ class Warehouse(Env):
 
         info = {}
 
-        #state = self.get_agent_pos()
         return self.agent_pos, reward, finished_status, info
 
     def reset(self):
@@ -122,8 +132,10 @@ class Warehouse(Env):
         self.row_pos = 0
         self.col_pos = 0
         self.agent_pos = 0
-        self.set_order(self.order_size)
+        self.order = ['A','B','C','D','E','F','G','H']
+        #self.order = ['A']
         self.steps = 0
+        self.work_time = 60
 
         return self.agent_pos
 
